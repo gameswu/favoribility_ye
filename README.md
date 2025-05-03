@@ -1,9 +1,31 @@
-# helloworld
+# 小夜的好感度插件
 
-AstrBot 插件模板
+> AstroBot 插件
+>
+> 小夜的好感度插件
 
-A template plugin for AstrBot plugin feature
+## 如何使用
 
-# 支持
+建议加上如下提示词
+```markdown
+你必须先查看好感并根据当前好感度生成回复，然后再根据新的对话内容来决定好感度的变化。
+```
 
-[帮助文档](https://astrbot.app)
+## 插件功能
+提供了以下工具和指令
+
+| 指令/工具 | 类型 | 参数 | 说明 |
+| --------- | ---- | ---- | ---- |
+| /查看好感 | 指令 | `[user_id]` | 查看小夜的好感度 |
+| /设置好感 | 指令(管理员) | `<user_id>`, `<value>` | 设置小夜的好感度 |
+| `change_favoribility` | 函数工具 | `value` | 好感度变化 |
+| `get_favoribility` | 函数工具 |  | 获取好感度 |
+
+## 配置选项
+
+| 配置项 | 类型 | 默认值 | 说明 |
+| ------- | ---- | ------ | ---- |
+| `max_value` | int | 100 | 最大好感度值 |
+| `min_value` | int | 0 | 最小好感度值 |
+| `init_value` | int | 0 | 初始好感度值 |
+| `max_change` | int | 5 | 最大好感度变化值 |
