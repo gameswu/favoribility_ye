@@ -47,7 +47,7 @@ class MyPlugin(Star):
         """查看好感度"""
         user_id = event.get_sender_id()
         favoribility = await self._get_favoribility(user_id)
-        yield event.plain_result(f"用户{user_id}的好感度为：{favoribility}")
+        yield event.plain_result(f"用户{user_id}的好感度为：{favoribility}/{self.max_value}")
 
     @filter.permission_type(filter.PermissionType.ADMIN)
     @filter.command("设置好感")
@@ -64,6 +64,7 @@ class MyPlugin(Star):
             value(number): 改变的值，正数增加好感度，负数减少好感度
         """
         user_id = event.get_sender_id()
+        value = min(max(value, -self.max_change), self.max_change)
         favoribility = await self._get_favoribility(user_id)
         new_value = min(max(favoribility + value, self.min_value), self.max_value)
         await self._set_favoribility(user_id, new_value)
