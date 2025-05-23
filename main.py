@@ -43,9 +43,10 @@ class MyPlugin(Star):
             json.dump(data, f)
 
     @filter.command("查看好感")
-    async def check_favoribility(self, event: AstrMessageEvent):
+    async def check_favoribility(self, event: AstrMessageEvent, user_id: str = None):
         """查看好感度"""
-        user_id = event.get_sender_id()
+        if user_id is None:
+            user_id = event.get_sender_id()
         favoribility = await self._get_favoribility(user_id)
         yield event.plain_result(f"用户{user_id}的好感度为：{favoribility}/{self.max_value}")
 
@@ -54,7 +55,7 @@ class MyPlugin(Star):
     async def set_favoribility(self, event: AstrMessageEvent, user_id: str, value: int):
         """设置用户的好感度"""
         await self._set_favoribility(user_id, value)
-        yield event.plain_result(f"用户{user_id}的好感度已设置为：{value}")
+        yield event.plain_result(f"用户{user_id}的好感度已设置为：{value}/{self.max_value}")
 
     @filter.llm_tool("change_favoribility")
     async def change_favoribility(self, event: AstrMessageEvent, value: int):
