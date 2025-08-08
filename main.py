@@ -1,6 +1,7 @@
 from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
 from astrbot.api.star import Context, Star, register
 from astrbot.api import logger, AstrBotConfig
+from astrbot.api.provider import ProviderRequest
 
 import os
 import json
@@ -71,12 +72,31 @@ class MyPlugin(Star):
         await self._set_favoribility(user_id, new_value)
         return f"你对用户{user_id}的好感度增加了{value}，当前好感度为：{new_value}/{self.max_value}"
     
-    @filter.llm_tool("get_favoribility")
-    async def get_favoribility(self, event: AstrMessageEvent):
-        """获取对用户的好感度"""
+    @filter.on_llm_request()
+    async def inject_favoribility_to_prompt(self, event: AstrMessageEvent, request: ProviderRequest):
+        """在LLM请求前将用户好感度注入到系统提示词中"""
         user_id = event.get_sender_id()
         favoribility = await self._get_favoribility(user_id)
-        return f"你对用户{user_id}的好感度为：{favoribility}/{self.max_value}"
+        
+        # 将好感度信息注入到系统提示词中
+        favoribility_info = f"\n[好感度系统] 你对当前用户(ID: {user_id})的好感度为: {favoribility}/{self.max_value}"
+        
+        # 根据好感度等级添加相应的行为提示
+        if favoribility >= self.max_value * 0.8:
+            favoribility_info += " (非常喜欢：表现得亲密友好，可以适当撒娇)"
+        elif favoribility >= self.max_value * 0.6:
+            favoribility_info += " (比较喜欢：表现得友善热情)"
+        elif favoribility >= self.max_value * 0.4:
+            favoribility_info += " (一般好感：表现得礼貌正常)"
+        elif favoribility >= self.max_value * 0.2:
+            favoribility_info += " (略有好感：表现得客气但保持距离)"
+        else:
+            favoribility_info += " (好感度较低：表现得冷淡疏远)"
+        
+        favoribility_info += "\n"
+        
+        # 将好感度信息添加到系统提示词中
+        request.system_prompt += favoribility_info
 
     async def terminate(self):
         """可选择实现异步的插件销毁方法，当插件被卸载/停用时会调用。"""
