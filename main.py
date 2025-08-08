@@ -5,7 +5,7 @@ from astrbot.api import logger, AstrBotConfig
 import os
 import json
 
-@register("favoribility_ye", "gameswu", "这是一个为小夜提供好感度评估的插件", "0.1.0", "https://github.com/gameswu/favoribility_ye")
+@register("favoribility_ye", "gameswu", "这是一个为小夜提供好感度评估的插件", "0.1.1", "https://github.com/gameswu/favoribility_ye")
 class MyPlugin(Star):
     def __init__(self, context: Context, config: AstrBotConfig):
         super().__init__(context)
@@ -69,14 +69,14 @@ class MyPlugin(Star):
         favoribility = await self._get_favoribility(user_id)
         new_value = min(max(favoribility + value, self.min_value), self.max_value)
         await self._set_favoribility(user_id, new_value)
-        return f"用户{user_id}的好感度增加了{value}，当前好感度为：{new_value}/{self.max_value}"
+        return f"你对用户{user_id}的好感度增加了{value}，当前好感度为：{new_value}/{self.max_value}"
     
     @filter.llm_tool("get_favoribility")
     async def get_favoribility(self, event: AstrMessageEvent):
-        """获取用户的好感度"""
+        """获取对用户的好感度"""
         user_id = event.get_sender_id()
         favoribility = await self._get_favoribility(user_id)
-        return f"用户{user_id}的好感度为：{favoribility}/{self.max_value}"
+        return f"你对用户{user_id}的好感度为：{favoribility}/{self.max_value}"
 
     async def terminate(self):
         """可选择实现异步的插件销毁方法，当插件被卸载/停用时会调用。"""
