@@ -19,7 +19,6 @@
 | /查看好感 | 指令 | `[user_id]` | 查看小夜的好感度 |
 | /设置好感 | 指令(管理员) | `<user_id>`, `<value>` | 设置小夜的好感度 |
 | `change_favoribility` | 函数工具 | `value` | 好感度变化 |
-| `get_favoribility` | 函数工具 |  | 获取好感度 |
 
 ## 配置选项
 
@@ -27,5 +26,5 @@
 | ------- | ---- | ------ | ---- |
 | `max_value` | int | 100 | 最大好感度值 |
 | `min_value` | int | 0 | 最小好感度值 |
-| `init_value` | int | 0 | 初始好感度值 |
+| `init_value` | int | 50 | 初始好感度值 |
 | `max_change` | int | 5 | 最大好感度变化值 |
